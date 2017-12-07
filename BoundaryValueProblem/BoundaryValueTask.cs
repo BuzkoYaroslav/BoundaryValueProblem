@@ -48,5 +48,20 @@ namespace BoundaryValueProblem
             return yx.Derivative(2).Calculate(x) + PX.Calculate(x) * yx.Derivative(1).Calculate(x) +
                 QX.Calculate(x) * yx.Calculate(x);
         }
+
+        public override string ToString()
+        {
+            string result = string.Format("Equation:\ny''[x] + {0} * y'[x] + {1} * y[x] = {2}\n",
+                PX.ToString(), QX.ToString(), FX.ToString());
+
+            result += string.Format("Range: [{0}, {1}]\n", Math.Round(Boundaries.Key, 2), Math.Round(Boundaries.Value, 2));
+
+            result += string.Format("Conditions:\n{0} * y[{1}] + {2} * y'[{1}] = {3}\n",
+                alpha0, a, alpha1, A);
+            result += string.Format("{0} * y[{1}] + {2} * y'[{1}] = {3}\n",
+                betta0, b, betta1, B);
+
+            return result;
+        }
     }
 }
