@@ -11,6 +11,7 @@ namespace BoundaryValueProblem.BoundaryValueProblem_Methods
     {
         private GaussMethod method;
         private double epsilan = 0.01;
+        private int collocationN = 10;
 
         public CollocationMethod()
         {
@@ -19,26 +20,27 @@ namespace BoundaryValueProblem.BoundaryValueProblem_Methods
 
         public KeyValuePair<double, double>[] Solve(BoundaryValueTask task, int n)
         {
-            MathFunction[] u = new MathFunction[n + 1];
-            for (int i = 0; i <= n; i++)
+            MathFunction[] u = new MathFunction[collocationN + 1];
+            for (int i = 0; i <= collocationN; i++)
                 u[i] = UK(task, i);
 
-            double[,] matrix = new double[n, n];
-            double[] vect = new double[n];
-            double h = (task.b - task.a - 2 * epsilan) / (n - 1);
+            double[,] matrix = new double[collocationN, collocationN];
+            double[] vect = new double[collocationN];
+            double h = (task.b - task.a) / (collocationN + 1);
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < collocationN; i++)
             {
-                double xi = task.a + epsilan + i * h;
+                double xi = task.a + (i + 1) * h;
 
                 vect[i] = task.FX.Calculate(xi) - task.LOperator(u[0], xi);
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < collocationN; j++)
                     matrix[i, j] = task.LOperator(u[j + 1], xi);
             }
 
             Vector C = method.Solve(new SLAE(matrix, vect));
             MathFunction yn = u[0];
-            for (int i = 1; i <= n; i++)
+            yn.Calculate(0);
+            for (int i = 1; i <= collocationN; i++)
                 yn += C[i - 1] * u[i];
 
             h = (task.b - task.a) / n;
@@ -65,8 +67,8 @@ namespace BoundaryValueProblem.BoundaryValueProblem_Methods
                 return new XFunction(res[0]) + res[1];
             }
 
-            return ((new XFunction(1.0) - task.a) ^ k) * 
-                ((new XFunction(1.0) - task.b) ^ 2);
+            return (new XFunction(1.0) ^ k) * 
+                (new XFunction(1.0) - task.a) * (new XFunction(1.0) - task.b);
         }
     }
 }

@@ -281,7 +281,7 @@ namespace library
             return path;
         }
 
-        private const int dotHalfWidth = 5;
+        private const int dotHalfWidth = 1;
         public GraphicsPath PathForDots(KeyValuePair<double, double>[] dots)
         {
             GraphicsPath path = new GraphicsPath();

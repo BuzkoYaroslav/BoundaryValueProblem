@@ -45,7 +45,10 @@ namespace BoundaryValueProblem
 
         public double LOperator(MathFunction yx, double x)
         {
-            return yx.Derivative(2).Calculate(x) + PX.Calculate(x) * yx.Derivative(1).Calculate(x) +
+            MathFunction der2 = yx.Derivative(2),
+                         der1 = yx.Derivative(1);
+
+            return der2.Calculate(x) + PX.Calculate(x) * der1.Calculate(x) +
                 QX.Calculate(x) * yx.Calculate(x);
         }
 

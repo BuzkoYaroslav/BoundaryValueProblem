@@ -37,11 +37,11 @@ namespace BoundaryValueProblem
         private void ConfigureBoundaries(MathFunction func, double minX, double maxX)
         {
             if (minX < 0)
-                minX -= 2;
+                minX -= 1;
             else
                 minX = -1;
             if (maxX > 0)
-                maxX += 2;
+                maxX += 1;
             else
                 maxX = 1;
 
@@ -49,11 +49,11 @@ namespace BoundaryValueProblem
                    maxY = func.MaxValue(minX, maxX, false);
 
             if (minY < 0)
-                minY -= 2;
+                minY -= 1;
             else
                 minY = -1;
             if (maxY > 0)
-                maxY += 2;
+                maxY += 1;
             else
                 maxY = 1;
 

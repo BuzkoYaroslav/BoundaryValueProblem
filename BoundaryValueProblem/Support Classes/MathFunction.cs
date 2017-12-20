@@ -112,7 +112,7 @@ namespace library
             MathFunction f = functions[0],
                           g = functions[1];
 
-            return this * (f.Derivative(1) * g / f + new LnFunction(1.0d, f) * g.Derivative(1));
+            return new PowerFunction(1.0, f, g - 1) * f.Derivative(1) * g.Derivative(1);
         }
 
         public override string ToString()
@@ -132,6 +132,21 @@ namespace library
         protected override MathFunction Multiply(double coef)
         {
             return new PowerFunction(coef * this.coef, functions[0], functions[1]);
+        }
+    }
+    class StepFunction : PowerFunction
+    {
+        public StepFunction(double coef, MathFunction foundation, MathFunction power): base(coef, foundation, power)
+        {
+        }
+
+        public override MathFunction Derivative(int order)
+        {
+            MathFunction f = functions[0],
+                          g = functions[1];
+
+            return new PowerFunction(1.0, f, g) * new LnFunction(1.0, f) * g.Derivative(1);
+
         }
     }
     class LnFunction: MathFunction
@@ -278,22 +293,26 @@ namespace library
             this.coef = coef;
             this.type = type;
 
-            if (functions.Length == 0)
-                this.functions.Add(1.0d);
-
             switch(type)
             {
                 case MathFunctionType.Sum:
+                    bool allZero = true;
+
                     foreach (MathFunction func in functions)
                         if (!func.IsZero())
+                        {
                             this.functions.Add(func);
+                            allZero = false;
+                        }
+
+                    if (allZero)
+                        this.coef = 0;
                     break;
                 case MathFunctionType.Multiplication:
                     for (int i = 0; i < functions.Length; i++)
                         if (functions[i].IsZero())
                         {
-                            coef = 1;
-                            this.functions.Add(0.0d);
+                            coef = 0;
                             break;
                         }
 
@@ -305,9 +324,8 @@ namespace library
 
                     if (functions[0].IsZero())
                     {
-                        coef = 1;
+                        coef = 0;
                         this.functions.Clear();
-                        this.functions.Add(0.0d);
                         break;
                     }
 
@@ -453,14 +471,14 @@ namespace library
         }
         public virtual MathFunction Derivative(int order)
         {
-            if (functions.Count == 0)
-                throw new Exception("Function is empty!");
-
             if (order < 0)
                 throw new Exception("Incorrect derivative order!");
 
             if (order == 0)
                 return new MathFunction(coef, type, functions.ToArray());
+
+            if (functions.Count == 0)
+                return 0;
 
             MathFunction result = 0.0d;
 
@@ -486,7 +504,7 @@ namespace library
                         result += func;
                     }
 
-                    result = Derivative(order - 1);
+                    result = result.Derivative(order - 1);
 
                     break;
                 case MathFunctionType.Division:
@@ -495,7 +513,7 @@ namespace library
 
                     result = (f.Derivative(1) * g - g.Derivative(1) * f) / (g ^ 2);
 
-                    result = Derivative(order - 1);
+                    result = result.Derivative(order - 1);
                     break;
             }
 

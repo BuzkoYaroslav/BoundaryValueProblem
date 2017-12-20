@@ -17,12 +17,16 @@ namespace BoundaryValueProblem
 
     public partial class Form1 : Form
     {
-        private const int n = 10;
-        private BoundaryValueTask task = new BoundaryValueTask(new XFunction(-2.0), 
-            -2, new XFunction(-4.0), 0, 1, new Condition(1, -1, 0, 0), new Condition(2, -1, 1, 1));
+        private const int n = 100;
+        //private BoundaryValueTask task = new BoundaryValueTask(new XFunction(-2.0),
+        //    -2, new XFunction(-4.0), 0, 1, new Condition(1, -1, 0, 0), new Condition(2, -1, 1, 1));
 
-        private MathFunction accurate = new XFunction(1.0) + 
-            new PowerFunction(1.0, Math.E, new PowerFunction(1.0, new XFunction(1.0), 2));
+        //private MathFunction accurate = new XFunction(1.0) +
+        //    new StepFunction(1.0, Math.E, new PowerFunction(1.0, new XFunction(1.0), 2));
+        private BoundaryValueTask task = new BoundaryValueTask(0,
+            1, new XFunction(-1.0), 0, 1, new Condition(1, 0, 0, 0), new Condition(1, 0, 1, 0));
+
+        private MathFunction accurate = new SinFunction(1.0 / Math.Sin(1), new XFunction(1.0)) - new XFunction(1.0);
         private KeyValuePair<double, double>[] gridMethod;
         private KeyValuePair<double, double>[] collocationMethod;
 
