@@ -67,7 +67,7 @@ namespace BoundaryValueProblem.BoundaryValueProblem_Methods
                 return new XFunction(res[0]) + res[1];
             }
 
-            return (new XFunction(1.0) ^ k) * 
+            return (new XFunction(1.0) ^ (k - 1)) * 
                 (new XFunction(1.0) - task.a) * (new XFunction(1.0) - task.b);
         }
     }
